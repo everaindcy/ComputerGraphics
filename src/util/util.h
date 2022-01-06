@@ -1,11 +1,10 @@
-#ifndef RTWEEKEND_H
-#define RTWEEKEND_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <cmath>
 #include <limits>
 #include <memory>
 #include <random>
-
 
 // Usings
 
@@ -35,16 +34,15 @@ inline double random_double(double min, double max) {
     return min + (max-min)*random_double();
 }
 
+inline int random_int(int min, int max) {
+    // Returns a random integer in [min,max].
+    return static_cast<int>(random_double(min, max+1));
+}
+
 inline double clamp(double x, double min, double max) {
     if (x < min) return min;
     if (x > max) return max;
     return x;
 }
-
-// Common Headers
-
-#include "vec3.h"
-#include "ray.h"
-#include "color.h"
 
 #endif
