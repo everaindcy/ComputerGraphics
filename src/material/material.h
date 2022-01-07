@@ -3,6 +3,7 @@
 
 #include "../util/utils.h"
 #include "../object/hittable.h"
+#include "../texture/textures.h"
 
 struct hit_record;
 

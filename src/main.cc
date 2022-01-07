@@ -1,5 +1,6 @@
 #include "util/utils.h"
 #include "object/objects.h"
+#include "texture/textures.h"
 #include "material/materials.h"
 #include "unit/units.h"
 
@@ -28,8 +29,8 @@ color ray_color(const ray& r, const hittable& world, int depth) {
 hittable_list random_scene() {
     hittable_list world;
 
-    auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
-    world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
+    auto checker = make_shared<checker_texture>(color(0.2, 0.3, 0.1), color(0.9, 0.9, 0.9));
+    world.add(make_shared<sphere>(point3(0,-1000,0), 1000, make_shared<lambertian>(checker)));
 
     hittable_list ball_list;
     for (int a = -11; a < 11; a++) {
@@ -87,7 +88,7 @@ int main() {
 
     // World
 
-    auto world = random_scene();
+    auto world = bvh_node(random_scene(), 0.0, 1.0);
 
     // Camera
 
