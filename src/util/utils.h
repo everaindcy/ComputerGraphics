@@ -6,5 +6,6 @@
 #include "ray.h"
 #include "color.h"
 #include "use_std_image.h"
+#include "image.h"
 
 #endif
