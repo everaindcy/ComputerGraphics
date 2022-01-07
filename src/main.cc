@@ -31,7 +31,7 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 
 int main() {
     scene sce;
-    scene_gen(sce, 14);
+    scene_gen(sce, 11);
 
     image img(sce.image_width, sce.image_height);
 

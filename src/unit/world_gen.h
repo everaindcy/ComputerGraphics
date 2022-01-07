@@ -84,7 +84,7 @@ hittable_list triangles() {
     auto earth_surface = make_shared<lambertian>(earth_texture);
     objects.add(make_shared<sphere>(point3(0,0,0), 2, earth_surface));
 
-    objects.add(make_shared<triangle>(point3(0,4,1), point3(0,-4,1), point3(2.5,0,1), make_shared<metal>(color(0.9,0.8,0.7), 0.2)));
+    objects.add(make_shared<triangle>(point3(0,4,-1), point3(0,-4,-1), point3(2.5,0,-1), make_shared<metal>(color(0.9,0.8,0.7), 0)));
 
     return objects;
 }
