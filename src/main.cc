@@ -95,6 +95,20 @@ hittable_list earth() {
     return hittable_list(globe);
 }
 
+hittable_list rotate_earth() {
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    auto globe = make_shared<sphere>(point3(0,0,0), 2, earth_surface);
+    auto earth = make_shared<transform>(mat4(
+        0.5, 0, -0.8660254038, 0,
+        0, 1, 0, 0,
+        0.8660254038, 0, 0.5, 0,
+        0, 0, 0, 1
+    ), globe);
+
+    return hittable_list(earth);
+}
+
 int main() {
 
     // Image
@@ -113,7 +127,7 @@ int main() {
     auto vfov = 40.0;
     auto aperture = 0.0;
 
-    switch (4) {
+    switch (10) {
         case 1:
             world = random_scene();
             lookfrom = point3(13,2,3);
@@ -136,9 +150,16 @@ int main() {
             vfov = 20.0;
             break;
 
+        case 10:
+            world = rotate_earth();
+            lookfrom = point3(0,0,14);
+            lookat = point3(0,0,0);
+            vfov = 20.0;
+            break;
+
         default:
-            lookfrom = point3(13,2,3);
-            lookat = point3(0,2,0);
+            lookfrom = point3(0,0,10);
+            lookat = point3(0,0,0);
             vfov = 90.0;
             break;
     }
