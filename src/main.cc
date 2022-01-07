@@ -99,12 +99,7 @@ hittable_list rotate_earth() {
     auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
     auto earth_surface = make_shared<lambertian>(earth_texture);
     auto globe = make_shared<sphere>(point3(0,0,0), 2, earth_surface);
-    auto earth = make_shared<transform>(mat4(
-        0.5, 0, -0.8660254038, 0,
-        0, 1, 0, 0,
-        0.8660254038, 0, 0.5, 0,
-        0, 0, 0, 1
-    ), globe);
+    auto earth = make_shared<transform>(mat4::translation(0.3,0.3,0.3)*mat4::rotation(vec3(1,1,1),60)*mat4::identity(), globe);
 
     return hittable_list(earth);
 }

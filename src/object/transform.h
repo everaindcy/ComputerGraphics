@@ -17,10 +17,10 @@ class transform : public hittable {
 public:
     transform() {}
     transform(const mat4 &m, shared_ptr<hittable> obj) : trans_inv(m), trans(m.inverse()), obj(obj) {
-        std::cerr << trans[0]  << '\t' << trans[1]  << '\t' << trans[2]  << '\t' << trans[3]  << std::endl;
-        std::cerr << trans[4]  << '\t' << trans[5]  << '\t' << trans[6]  << '\t' << trans[7]  << std::endl;
-        std::cerr << trans[8]  << '\t' << trans[9]  << '\t' << trans[10] << '\t' << trans[11] << std::endl;
-        std::cerr << trans[12] << '\t' << trans[13] << '\t' << trans[14] << '\t' << trans[15] << std::endl;
+        // std::cerr << trans[0]  << '\t' << trans[1]  << '\t' << trans[2]  << '\t' << trans[3]  << std::endl;
+        // std::cerr << trans[4]  << '\t' << trans[5]  << '\t' << trans[6]  << '\t' << trans[7]  << std::endl;
+        // std::cerr << trans[8]  << '\t' << trans[9]  << '\t' << trans[10] << '\t' << trans[11] << std::endl;
+        // std::cerr << trans[12] << '\t' << trans[13] << '\t' << trans[14] << '\t' << trans[15] << std::endl;
     }
 
     virtual bool hit(

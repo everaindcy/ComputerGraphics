@@ -47,6 +47,17 @@ public:
 
 public:
     double e[16];
+
+public:
+    inline static mat4 identity();
+	inline static mat4 translation(double x, double y, double z);
+	inline static mat4 translation(const vec3& rTranslation);
+	inline static mat4 rotateX(double degree);
+	inline static mat4 rotateY(double degree);
+	inline static mat4 rotateZ(double degree);
+	inline static mat4 rotation(const vec3& rDirection, double degree);
+	inline static mat4 scaling(double sx, double sy, double sz);
+	inline static mat4 scaling(double s);
 };
 
 void mat4::transpose() {
@@ -138,8 +149,117 @@ mat4 mat4::inverse(bool* pbIsSingular, double epsilon) const {
 	}
 }
 
+mat4 mat4::identity() {
+    return mat4(
+        1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+    );
+}
+
+mat4 mat4::translation(double x, double y, double z) {
+    return mat4(
+        1, 0, 0, x,
+		0, 1, 0, y,
+		0, 0, 1, z,
+		0, 0, 0, 1
+    );
+}
+
+mat4 mat4::translation(const vec3& rTranslation) {
+    return mat4(
+        1, 0, 0, rTranslation.x(),
+		0, 1, 0, rTranslation.y(),
+		0, 0, 1, rTranslation.z(),
+		0, 0, 0, 1
+    );
+}
+
+mat4 mat4::rotateX(double degree) {
+    double radians = degrees_to_radians(degree);
+	double c = cos(radians);
+	double s = sin(radians);
+    return mat4(
+        1, 0, 0, 0,
+		0, c,-s, 0,
+		0, s, c, 0,
+		0, 0, 0, 1
+    );
+}
+
+mat4 mat4::rotateY(double degree) {
+    double radians = degrees_to_radians(degree);
+	double c = cos(radians);
+	double s = sin(radians);
+    return mat4(
+        c, 0, s, 0,
+		0, 1, 0, 0,
+	   -s, 0, c, 0,
+		0, 0, 0, 1
+    );
+}
+
+mat4 mat4::rotateZ(double degree) {
+    double radians = degrees_to_radians(degree);
+	double c = cos(radians);
+	double s = sin(radians);
+    return mat4(
+        c,-s, 0, 0,
+		s, c, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+    );
+}
+
+mat4 mat4::rotation(const vec3& rDirection, double degree) {
+    vec3 normalizedDirection = unit_vector(rDirection);
+	double x = normalizedDirection.x();
+	double y = normalizedDirection.y();
+	double z = normalizedDirection.z();
+	
+    double radians = degrees_to_radians(degree);
+	double cosTheta = cos(radians);
+	double sinTheta = sin(radians);
+
+	return mat4
+	(
+		x*x*(1.0-cosTheta) + cosTheta, y*x*(1.0-cosTheta)-z*sinTheta, z*x*(1.0-cosTheta)+y*sinTheta, 0.0,
+		x*y*(1.0-cosTheta)+z*sinTheta, y*y*(1.0-cosTheta) + cosTheta, z*y*(1.0-cosTheta)-x*sinTheta, 0.0,
+		x*z*(1.0-cosTheta)-y*sinTheta, y*z*(1.0-cosTheta)+x*sinTheta, z*z*(1.0-cosTheta) + cosTheta, 0.0,
+		0.0,                           0.0,                           0.0,                           1.0
+	);
+}
+
+mat4 mat4::scaling(double sx, double sy, double sz) {
+    return mat4(
+       sx,  0,  0,  0,
+	    0, sy,  0,  0,
+	    0,  0, sz,  0,
+	    0,  0,  0,  1
+    );
+}
+
+mat4 mat4::scaling(double s) {
+    return mat4(
+        s, 0, 0, 0,
+		0, s, 0, 0,
+		0, 0, s, 0,
+		0, 0, 0, 1
+    );
+}
+
 inline vec4 operator*(const mat4 mat, const vec4 vec) {
     return vec4(dot(mat.getRow(0),vec), dot(mat.getRow(1),vec), dot(mat.getRow(2),vec), dot(mat.getRow(3),vec));
+}
+
+inline mat4 operator*(const mat4 u, const mat4 v) {
+    return mat4(
+        dot(u.getRow(0),v.getCol(0)), dot(u.getRow(0),v.getCol(1)), dot(u.getRow(0),v.getCol(2)), dot(u.getRow(0),v.getCol(3)),
+        dot(u.getRow(1),v.getCol(0)), dot(u.getRow(1),v.getCol(1)), dot(u.getRow(1),v.getCol(2)), dot(u.getRow(1),v.getCol(3)),
+        dot(u.getRow(2),v.getCol(0)), dot(u.getRow(2),v.getCol(1)), dot(u.getRow(2),v.getCol(2)), dot(u.getRow(2),v.getCol(3)),
+        dot(u.getRow(3),v.getCol(0)), dot(u.getRow(3),v.getCol(1)), dot(u.getRow(3),v.getCol(2)), dot(u.getRow(3),v.getCol(3))
+    );
 }
 
 #endif
