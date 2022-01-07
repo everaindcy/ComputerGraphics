@@ -4,17 +4,18 @@
 #include "../util/utils.h"
 
 class aabb {
-    public:
-        aabb() {}
-        aabb(const point3& a, const point3& b) { minimum = a; maximum = b;}
+public:
+    aabb() {}
+    aabb(const point3& a, const point3& b) { minimum = a; maximum = b;}
 
-        point3 min() const {return minimum; }
-        point3 max() const {return maximum; }
+    point3 min() const {return minimum; }
+    point3 max() const {return maximum; }
 
-        bool hit(const ray& r, double t_min, double t_max) const;
+    bool hit(const ray& r, double t_min, double t_max) const;
 
-        point3 minimum;
-        point3 maximum;
+public:
+    point3 minimum;
+    point3 maximum;
 };
 
 inline bool aabb::hit(const ray& r, double t_min, double t_max) const {

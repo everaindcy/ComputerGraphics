@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "../util.h"
+
 using std::sqrt;
 
 class vec3 {
