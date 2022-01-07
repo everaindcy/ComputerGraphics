@@ -5,6 +5,7 @@
 #include "unit/units.h"
 
 #include <iostream>
+#include <string>
 #include <omp.h>
 
 color ray_color(const ray& r, const color& background, const hittable& world, int depth) {
@@ -196,7 +197,7 @@ int main() {
             world = cornell_box();
             aspect_ratio = 1.0;
             image_width = 600;
-            samples_per_pixel = 50;
+            samples_per_pixel = 200;
             background = color(0,0,0);
             lookfrom = point3(278, 278, -800);
             lookat = point3(278, 278, 0);
@@ -228,11 +229,14 @@ int main() {
 
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-    omp_set_num_threads(30);
+    color* img;
+    img = new color[image_height*image_width];
+
+    // omp_set_num_threads(30);
     #pragma omp parallel for schedule(dynamic, 10)
     for (int n = 0; n < image_height; n++) {
         int j = image_height - 1 - n;
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+        std::cerr << "Scanlines remaining: " + std::to_string(j) + " \n" << std::flush;
         for (int i = 0; i < image_width; ++i) {
             color pixel_color(0, 0, 0);
             for (int s = 0; s < samples_per_pixel; ++s) {
@@ -241,8 +245,12 @@ int main() {
                 ray r = cam.get_ray(u, v);
                 pixel_color += ray_color(r, background, world, max_depth);
             }
-            write_color(std::cout, pixel_color, samples_per_pixel);
+            write_color(img, pixel_color, samples_per_pixel, n, i, image_width, image_height);
         }
+    }
+
+    for (int i = 0; i < image_height*image_width; i++) {
+        std::cout << img[i] << std::endl;
     }
 
     std::cerr << "\nDone.\n";
