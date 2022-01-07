@@ -131,11 +131,46 @@ hittable_list cornell_box() {
 }
 
 hittable_list bunny() {
-    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    hittable_list objects;
 
-    auto bunny = make_shared<mesh>("meshs/bunny_1k.obj", green);
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    objects.add(make_shared<sphere>(point3(0,1,1), 0.5, earth_surface));
+
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto sphere_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
+
+    auto bunny = make_shared<mesh>("meshs/bunny_1k.obj", sphere_material);
+    objects.add(bunny);
+
+    return objects;
+}
+
+hittable_list smooth_cube() {
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto sphere_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
+
+    auto bunny = make_shared<smoothMesh>("meshs/cube.obj", earth_surface);
 
     return hittable_list(bunny);
+}
+
+hittable_list smooth_bunny() {
+    hittable_list objects;
+
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    // objects.add(make_shared<sphere>(point3(0,1,1), 0.5, earth_surface));
+
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto sphere_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
+
+    auto bunny = make_shared<smoothMesh>("meshs/bunny_1k.obj", earth_surface);
+    objects.add(bunny);
+
+    return objects;
 }
 
 #endif

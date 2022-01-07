@@ -16,6 +16,7 @@ public:
 
     void clear() { objects.clear(); }
     void add(shared_ptr<hittable> object) { objects.push_back(object); }
+    shared_ptr<hittable>& operator[] (int idx) {return objects[idx];}
 
     virtual bool hit(
         const ray& r, double t_min, double t_max, hit_record& rec) const override;
