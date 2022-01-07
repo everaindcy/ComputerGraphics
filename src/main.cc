@@ -5,6 +5,7 @@
 #include "unit/units.h"
 
 #include <iostream>
+#include <omp.h>
 
 color ray_color(const ray& r, const color& background, const hittable& world, int depth) {
     hit_record rec;
@@ -227,7 +228,10 @@ int main() {
 
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-    for (int j = image_height-1; j >= 0; --j) {
+    omp_set_num_threads(30);
+    #pragma omp parallel for schedule(dynamic, 10)
+    for (int n = 0; n < image_height; n++) {
+        int j = image_height - 1 - n;
         std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i) {
             color pixel_color(0, 0, 0);
