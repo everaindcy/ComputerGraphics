@@ -77,6 +77,18 @@ hittable_list earth() {
     return hittable_list(globe);
 }
 
+hittable_list triangles() {
+    hittable_list objects;
+
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    objects.add(make_shared<sphere>(point3(0,0,0), 2, earth_surface));
+
+    objects.add(make_shared<triangle>(point3(0,4,1), point3(0,-4,1), point3(2.5,0,1), make_shared<metal>(color(0.9,0.8,0.7), 0.2)));
+
+    return objects;
+}
+
 hittable_list rotate_earth() {
     auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
     auto earth_surface = make_shared<lambertian>(earth_texture);

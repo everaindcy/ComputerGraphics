@@ -31,7 +31,7 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 
 int main() {
     scene sce;
-    scene_gen(sce, 10);
+    scene_gen(sce, 11);
 
     image img(sce.image_width, sce.image_height);
 
@@ -51,6 +51,8 @@ int main() {
             write_color(img, pixel_color, sce.samples_per_pixel, n, i);
         }
     }
+
+    std::cerr << "down.\n" << std::flush;
 
     img.print_ppm();
 }

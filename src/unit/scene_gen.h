@@ -59,6 +59,14 @@ void scene_gen(scene &sce, int idx) {
             sce.vfov = 20.0;
             break;
 
+        case 11:
+            sce.objs = triangles();
+            sce.background = color(0.70, 0.80, 1.00);
+            sce.lookfrom = point3(14,0,14);
+            sce.lookat = point3(0,0,0);
+            sce.vfov = 20.0;
+            break;
+
         default:
             sce.background = color(0.0, 0.0, 0.0);
             break;
