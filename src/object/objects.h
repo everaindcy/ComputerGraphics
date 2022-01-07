@@ -4,6 +4,7 @@
 #include "aarect.h"
 #include "bvh.h"
 #include "hittable_list.h"
+#include "mesh.h"
 #include "moving_sphere.h"
 #include "sphere.h"
 #include "transform.h"

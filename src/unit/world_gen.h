@@ -130,4 +130,12 @@ hittable_list cornell_box() {
     return objects;
 }
 
+hittable_list bunny() {
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+
+    auto bunny = make_shared<mesh>("meshs/bunny_1k.obj", green);
+
+    return hittable_list(bunny);
+}
+
 #endif
