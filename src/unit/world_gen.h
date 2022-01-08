@@ -127,6 +127,12 @@ hittable_list cornell_box() {
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
+    shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
+    objects.add(make_shared<transform>(mat4::translation(265,0,295)*mat4::rotateY(15), box1));
+
+    shared_ptr<hittable> box2 = make_shared<box>(point3(0,0,0), point3(165,165,165), white);
+    objects.add(make_shared<transform>(mat4::translation(130,0,65)*mat4::rotateY(-18), box2));
+
     return objects;
 }
 

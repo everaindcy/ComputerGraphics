@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "aarect.h"
+#include "box.h"
 #include "bvh.h"
 #include "hittable_list.h"
 #include "mesh.h"
