@@ -24,12 +24,17 @@ public:
         img[x*image_width + y] = color(r, g, b);
     }
 
+    void print() {
+        for (int i = 0; i < image_height*image_width; i++) {
+            std::cout << img[i] << "\n";
+        }
+    }
+
     void print_ppm() {
         std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
         for (int i = 0; i < image_height*image_width; i++) {
             std::cout << img[i] << "\n";
         }
-        std::cout << std::flush;
     }
 
 public:
