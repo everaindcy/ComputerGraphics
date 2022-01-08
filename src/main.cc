@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string>
 #include <mutex>
-#include <time.h>
 #include <omp.h>
 
 color ray_color(const ray& r, const color& background, const hittable& world, int depth) {
@@ -39,9 +38,8 @@ int main() {
 
 std::mutex mux;
 int finished = 0;
-clock_t start, end;
 
-start = clock();
+auto start = std::chrono::system_clock::now();
     std::cerr << "row finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(((double)finished)/sce.image_height)+"%"  << std::flush;
 // omp_set_num_threads(30);
 #pragma omp parallel for schedule(dynamic, 10)
@@ -61,9 +59,10 @@ start = clock();
         mux.lock(); finished++; mux.unlock();
         std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
     }
-end = clock();
+auto end = std::chrono::system_clock::now();
+auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
 
-    std::cerr << "\nDown. Time = "+std::to_string(double(end-start)/CLOCKS_PER_SEC)+"s\n" << std::flush;
+    std::cerr << "\nDown. Time = "+std::to_string(double(duration.count())*std::chrono::milliseconds::period::num/std::chrono::milliseconds::period::den)+"s\n" << std::flush;
 
     img.print_ppm();
 }
