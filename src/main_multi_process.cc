@@ -59,7 +59,8 @@ int main() {
 
 
 auto start = std::chrono::system_clock::now();
-
+int finished = 0;
+if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
     for (int n = taskbegin; n < taskend; n++) {
         int j = sce.image_height - 1 - n;
         for (int i = 0; i < sce.image_width; ++i) {
@@ -72,6 +73,9 @@ auto start = std::chrono::system_clock::now();
             }
             write_color(img, pixel_color, sce.samples_per_pixel, n-taskbegin, i);
         }
+
+        finished += num_process;
+        if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
     }
 
     if (taskbegin == 0) {
@@ -85,6 +89,6 @@ auto start = std::chrono::system_clock::now();
 auto end = std::chrono::system_clock::now();
 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
 if(taskend==sce.image_height) {
-std::cerr << "Down. Time = "+std::to_string(double(duration.count())*std::chrono::milliseconds::period::num/std::chrono::milliseconds::period::den)+"s\n" << std::flush;
+std::cerr << "\nDown. Time = "+std::to_string(double(duration.count())*std::chrono::milliseconds::period::num/std::chrono::milliseconds::period::den)+"s\n" << std::flush;
 }
 }

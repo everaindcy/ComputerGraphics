@@ -40,7 +40,7 @@ std::mutex mux;
 int finished = 0;
 
 auto start = std::chrono::system_clock::now();
-    std::cerr << "row finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(((double)finished)/sce.image_height)+"%"  << std::flush;
+    std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
 // omp_set_num_threads(30);
 // #pragma omp parallel for schedule(dynamic, 10)
     for (int n = 0; n < sce.image_height; n++) {
