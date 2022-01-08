@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <string>
+#include <mutex>
+#include <time.h>
 #include <omp.h>
 
 color ray_color(const ray& r, const color& background, const hittable& world, int depth) {
@@ -35,11 +37,16 @@ int main() {
 
     image img(sce.image_width, sce.image_height);
 
-    // omp_set_num_threads(30);
-    #pragma omp parallel for schedule(dynamic, 10)
+std::mutex mux;
+int finished = 0;
+clock_t start, end;
+
+start = clock();
+    std::cerr << "row finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(((double)finished)/sce.image_height)+"%"  << std::flush;
+// omp_set_num_threads(30);
+#pragma omp parallel for schedule(dynamic, 10)
     for (int n = 0; n < sce.image_height; n++) {
         int j = sce.image_height - 1 - n;
-        std::cerr << "Scanlines remaining: " + std::to_string(j) + " \n" << std::flush;
         for (int i = 0; i < sce.image_width; ++i) {
             color pixel_color(0, 0, 0);
             for (int s = 0; s < sce.samples_per_pixel; ++s) {
@@ -50,9 +57,13 @@ int main() {
             }
             write_color(img, pixel_color, sce.samples_per_pixel, n, i);
         }
-    }
 
-    std::cerr << "down.\n" << std::flush;
+        mux.lock(); finished++; mux.unlock();
+        std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
+    }
+end = clock();
+
+    std::cerr << "\nDown. Time = "+std::to_string(double(end-start)/CLOCKS_PER_SEC)+"s\n" << std::flush;
 
     img.print_ppm();
 }
