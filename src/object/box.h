@@ -1,8 +1,6 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "../util/utils.h"
-
 #include "aarect.h"
 #include "hittable_list.h"
 

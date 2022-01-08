@@ -51,6 +51,16 @@ void scene_gen(scene &sce, int idx) {
             sce.vfov = 40.0;
             break;
 
+        case 7:
+            sce.objs = cornell_smoke();
+            sce.aspect_ratio = 1.0;
+            sce.image_width = 600;
+            sce.samples_per_pixel = 200;
+            sce.lookfrom = point3(278, 278, -800);
+            sce.lookat = point3(278, 278, 0);
+            sce.vfov = 40.0;
+            break;
+
         case 10:
             sce.objs = rotate_earth();
             sce.background = color(0.70, 0.80, 1.00);

@@ -5,6 +5,7 @@
 #include "box.h"
 #include "bvh.h"
 #include "hittable_list.h"
+#include "medium.h"
 #include "mesh.h"
 #include "moving_sphere.h"
 #include "sphere.h"
