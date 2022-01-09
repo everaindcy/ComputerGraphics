@@ -34,7 +34,7 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 
 int main() {
     scene sce;
-    scene_gen(sce, 7);
+    scene_gen(sce, 8);
 
     const int num_process = 30;
     const int task_per_process = (sce.image_height+num_process-1)/num_process;
@@ -60,7 +60,7 @@ int main() {
 
 auto start = std::chrono::system_clock::now();
 int finished = 0;
-if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
+if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rPixels finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height*sce.image_width)+" | "+std::to_string(100.0*finished/sce.image_height/sce.image_width)+"%"  << std::flush;
     for (int n = taskbegin; n < taskend; n++) {
         int j = sce.image_height - 1 - n;
         for (int i = 0; i < sce.image_width; ++i) {
@@ -72,10 +72,10 @@ if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rRow
                 pixel_color += ray_color(r, sce.background, sce.objs, sce.max_depth);
             }
             write_color(img, pixel_color, sce.samples_per_pixel, n-taskbegin, i);
+finished += num_process;
+finished = finished > sce.image_height*sce.image_width ? sce.image_height*sce.image_width : finished;
+if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rPixels finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height*sce.image_width)+" | "+std::to_string(100.0*finished/sce.image_height/sce.image_width)+"%"  << std::flush;
         }
-
-        finished += num_process;
-        if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
     }
 
     if (taskbegin == 0) {

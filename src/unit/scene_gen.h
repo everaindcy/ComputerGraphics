@@ -61,6 +61,17 @@ void scene_gen(scene &sce, int idx) {
             sce.vfov = 40.0;
             break;
 
+        case 8:
+            sce.objs = final_scene();
+            sce.aspect_ratio = 1.0;
+            sce.image_width = 800;
+            sce.samples_per_pixel = 10000;
+            sce.background = color(0,0,0);
+            sce.lookfrom = point3(478, 278, -600);
+            sce.lookat = point3(278, 278, 0);
+            sce.vfov = 40.0;
+            break;
+
         case 10:
             sce.objs = rotate_earth();
             sce.background = color(0.70, 0.80, 1.00);
