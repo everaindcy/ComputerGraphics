@@ -153,6 +153,8 @@ hittable_list bunny2() {
     objects.add(ground);
     objects.add(ball0);
     objects.add(bunny);
+
+    return objects;
 }
 
 hittable_list bunny() {
@@ -299,13 +301,16 @@ hittable_list curves() {
     auto curve_face = make_shared<surface_rev>(make_shared<bezierCurve2D>(a, b, n), metal_material);
     objects.add(curve_face);
     
-    auto albedo = color::random() * color::random();
-    auto sphere_material = make_shared<lambertian>(albedo);
-    objects.add(make_shared<sphere>(point3(-2, -2, 2), 0.5, sphere_material));
+    auto sphere_material = make_shared<lambertian>(color(0.7, 0.2, 0.3));
+    objects.add(make_shared<sphere>(point3(-2, -1.5, 2), 0.5, sphere_material));
     
-    albedo = color::random() * color::random();
-    sphere_material = make_shared<lambertian>(albedo);
-    objects.add(make_shared<sphere>(point3(-2, -2, 2), 0.5, sphere_material));
+    sphere_material = make_shared<lambertian>(color(0.1, 0.3, 0.6));
+    objects.add(make_shared<sphere>(point3(1.2, -1.5, 2), 0.5, sphere_material));
+
+    auto ground_texture = make_shared<checker_texture>(color(1,1,1), color(0.3,0.3,0.3));
+    auto ground_surface = make_shared<lambertian>(ground_texture);
+    auto ground = make_shared<sphere>(point3(0, -1000, 0), 1000-2, ground_surface);
+    objects.add(ground);
 
     return objects;
 }

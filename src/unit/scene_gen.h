@@ -117,7 +117,20 @@ void scene_gen(scene &sce, int idx) {
             sce.background = color(0.70, 0.80, 1.00);
             sce.lookfrom = point3(0,10,14);
             sce.lookat = point3(0,0,0);
-            sce.vfov = 20.0;
+            sce.image_width = 800;
+            sce.vfov = 25.0;
+            break;
+
+        case 16:
+            sce.objs = bunny2();
+            sce.background = color(0.7,0.8,0.9);
+            sce.lookfrom = point3(0,0.2,0.8);
+            sce.lookat = point3(0,0.2,0);
+            sce.vfov = 40.0;
+            sce.image_width = 800;
+            sce.aspect_ratio = 16.0/9.0;
+            sce.aperture = 0.03;
+            sce.dist_to_focus = 0.8;
             break;
 
         default:
