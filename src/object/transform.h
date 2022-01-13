@@ -3,16 +3,6 @@
 
 #include "hittable.h"
 
-// transforms a 3D point using a matrix, returning a 3D point
-static vec3 transformPoint(const mat4 &mat, const vec3 &point) {
-    return (mat * vec4(point, 1)).xyz();
-}
-
-// transform a 3D directino using a matrix, returning a direction
-static vec3 transformDirection(const mat4 &mat, const vec3 &dir) {
-    return (mat * vec4(dir, 0)).xyz();
-}
-
 class transform : public hittable {
 public:
     transform() {}

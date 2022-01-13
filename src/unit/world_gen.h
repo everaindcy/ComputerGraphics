@@ -265,4 +265,22 @@ hittable_list final_scene() {
     return objects;
 }
 
+hittable_list curves() {
+    hittable_list objects;
+
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto metal_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
+
+    double a[100] = {-2, -4, 0, -2, -3, -5};
+    double b[100] = {2, 0, 0, -2, -5, -3};
+    int n = 4;
+    auto curve_face = make_shared<surface_rev>(make_shared<bezierCurve2D>(a, b, n), green);
+    objects.add(curve_face);
+
+    return objects;
+}
+
 #endif

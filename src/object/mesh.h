@@ -16,6 +16,9 @@ public:
         : mp(m) {
         create_mesh(filename);
     }
+    mesh(const hittable_list& triangles) {
+        this->triangles = make_shared<bvh_node>(triangles, 0,0);
+    }
 
     virtual bool hit(
         const ray& r, double t_min, double t_max, hit_record& rec) const override;

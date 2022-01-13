@@ -262,4 +262,14 @@ inline mat4 operator*(const mat4 u, const mat4 v) {
     );
 }
 
+// transforms a 3D point using a matrix, returning a 3D point
+vec3 transformPoint(const mat4 &mat, const vec3 &point) {
+    return (mat * vec4(point, 1)).xyz();
+}
+
+// transform a 3D directino using a matrix, returning a direction
+vec3 transformDirection(const mat4 &mat, const vec3 &dir) {
+    return (mat * vec4(dir, 0)).xyz();
+}
+
 #endif

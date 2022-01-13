@@ -9,6 +9,7 @@
 #include "mesh.h"
 #include "moving_sphere.h"
 #include "sphere.h"
+#include "surface_rev.h"
 #include "transform.h"
 #include "triangle.h"
 
