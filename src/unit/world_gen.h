@@ -28,8 +28,7 @@ hittable_list random_scene() {
                     auto albedo = color::random() * color::random();
                     sphere_material = make_shared<lambertian>(albedo);
                     auto center2 = center + vec3(0, random_double(0,.5), 0);
-                    ball_list.add(make_shared<moving_sphere>(
-                        center, center2, 0.0, 1.0, 0.2, sphere_material));
+                    ball_list.add(make_shared<sphere>(center, 0.2, sphere_material));
                 } else if (choose_mat < 0.95) {
                     // metal
                     auto albedo = color::random(0.5, 1);
@@ -136,6 +135,26 @@ hittable_list cornell_box() {
     return objects;
 }
 
+hittable_list bunny2() {
+    auto ground_texture = make_shared<checker_texture>(color(1,1,1), color(0.9,0.3,0.8));
+    auto ground_surface = make_shared<lambertian>(ground_texture);
+    auto ground = make_shared<sphere>(point3(0, -1000, 0), 1000.07, ground_surface);
+
+    auto ball0_surface = make_shared<metal>(color(0.8, 0.8, 0.9), 0.0);
+    auto ball1_surface = make_shared<lambertian>(color(0.2, 0.9, 0.6));
+    auto ball2_surface = make_shared<lambertian>(color(0.9, 0.2, 0.6));
+    auto ball0 = make_shared<sphere>(point3(0.3,0.57,-1), 0.5, ball0_surface);
+    auto ball1 = make_shared<sphere>(point3(6,1,-2), 1, ball1_surface);
+
+    auto mesh_surface = make_shared<lambertian>(color(0.3, 0.3, 0.8));
+    auto bunny = make_shared<mesh>("meshs/bunny_1k.obj", mesh_surface);
+
+    hittable_list objects;
+    objects.add(ground);
+    objects.add(ball0);
+    objects.add(bunny);
+}
+
 hittable_list bunny() {
     hittable_list objects;
 
@@ -173,7 +192,7 @@ hittable_list smooth_bunny() {
     auto green = make_shared<lambertian>(color(.12, .45, .15));
     auto sphere_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
 
-    auto bunny = make_shared<smoothMesh>("meshs/bunny_1k.obj", earth_surface);
+    auto bunny = make_shared<smoothMesh>("meshs/bunny_1k.obj", sphere_material);
     objects.add(bunny);
 
     return objects;
@@ -272,13 +291,21 @@ hittable_list curves() {
     auto earth_surface = make_shared<lambertian>(earth_texture);
 
     auto green = make_shared<lambertian>(color(.12, .45, .15));
-    auto metal_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
+    auto metal_material = make_shared<metal>(color(0.9,0.8,0.7), 0);
 
     double a[100] = {-2, -4, 0, -2, -3, -5};
     double b[100] = {2, 0, 0, -2, -5, -3};
     int n = 4;
-    auto curve_face = make_shared<surface_rev>(make_shared<bezierCurve2D>(a, b, n), green);
+    auto curve_face = make_shared<surface_rev>(make_shared<bezierCurve2D>(a, b, n), metal_material);
     objects.add(curve_face);
+    
+    auto albedo = color::random() * color::random();
+    auto sphere_material = make_shared<lambertian>(albedo);
+    objects.add(make_shared<sphere>(point3(-2, -2, 2), 0.5, sphere_material));
+    
+    albedo = color::random() * color::random();
+    sphere_material = make_shared<lambertian>(albedo);
+    objects.add(make_shared<sphere>(point3(-2, -2, 2), 0.5, sphere_material));
 
     return objects;
 }

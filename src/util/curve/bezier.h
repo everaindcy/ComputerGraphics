@@ -9,6 +9,7 @@ class bezierCurve2D : public curve {
 public:
     bezierCurve2D() = default;
     bezierCurve2D(double* px, double* py, int n);
+    bezierCurve2D(point3* p, int n);
     ~bezierCurve2D() {delete[] px; delete[] py; delete[] dx; delete[] dy;};
 
     virtual point3 getPoint(double t) const override;
@@ -68,6 +69,40 @@ bezierCurve2D::bezierCurve2D(double* _px, double* _py, int _n) {
     for (int i = 0; i < n; i++) {
         px[i] = _px[i];
         py[i] = _py[i];
+    }
+
+}
+
+bezierCurve2D::bezierCurve2D(point3* _p, int _n) {
+    n = _n;
+    px = new double[n];
+    py = new double[n];
+    dx = new double[n];
+    dy = new double[n];
+    for (int i = 0; i < n; i++) {
+        px[i] = _p[i][0];
+        py[i] = _p[i][1];
+    }
+
+    for (int i = 0; i < n; i++) {
+        dx[i] = px[0];
+        dy[i] = py[0];
+        for (int j = 0; j < n; j++) {
+            px[j] = px[j+1] - px[j];
+            py[j] = py[j+1] - py[j];
+        }
+    }
+    double n_down = 1, fac = 1, nxt = n-1;
+    for (int i = 0; i < n; i++, nxt--) {
+        fac = fac * (i==0 ? 1 : i);
+        dx[i] *= n_down/fac;
+        dy[i] *= n_down/fac;
+        n_down *= nxt;
+    }
+
+    for (int i = 0; i < n; i++) {
+        px[i] = _p[i][0];
+        py[i] = _p[i][1];
     }
 
 }

@@ -23,7 +23,7 @@ public:
     shared_ptr<curve> cv;
     shared_ptr<material> mat_ptr;
     
-    shared_ptr<mesh> surface_mesh;
+    shared_ptr<hittable> surface_mesh;
 
 private:
     void gen_mesh();
@@ -68,13 +68,20 @@ void surface_rev::gen_mesh() {
 
     hittable_list tris;
     for (unsigned i = 0; i < surface.VF.size(); i++) {
-        tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
-                                       surface.VV[std::get<1>(surface.VF[i])],
-                                       surface.VV[std::get<2>(surface.VF[i])],
-                                       mat_ptr));
+        // tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
+        //                                surface.VV[std::get<1>(surface.VF[i])],
+        //                                surface.VV[std::get<2>(surface.VF[i])],
+        //                                mat_ptr));
+        tris.add(make_shared<smoothTriangle>(surface.VV[std::get<0>(surface.VF[i])],
+                                             surface.VV[std::get<1>(surface.VF[i])],
+                                             surface.VV[std::get<2>(surface.VF[i])],
+                                             surface.VN[std::get<0>(surface.VF[i])],
+                                             surface.VN[std::get<1>(surface.VF[i])],
+                                             surface.VN[std::get<2>(surface.VF[i])],
+                                             mat_ptr));
     }
 
-    surface_mesh = make_shared<mesh>(tris);
+    surface_mesh = make_shared<smoothMesh>(tris);
 }
 
 bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {

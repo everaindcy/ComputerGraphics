@@ -115,7 +115,7 @@ void scene_gen(scene &sce, int idx) {
         case 15:
             sce.objs = curves();
             sce.background = color(0.70, 0.80, 1.00);
-            sce.lookfrom = point3(0,0,20);
+            sce.lookfrom = point3(0,10,14);
             sce.lookat = point3(0,0,0);
             sce.vfov = 20.0;
             break;

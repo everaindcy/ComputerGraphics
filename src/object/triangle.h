@@ -22,6 +22,10 @@ public:
 };
 
 bool triangle::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+    // if (dot(r.direction(), normal) >= 0) {
+    //     return false;
+    // }
+
     const point3 &a = v[0];
     const point3 &b = v[1];
     const point3 &c = v[2];
@@ -149,7 +153,7 @@ bool smoothTriangle::hit(const ray& r, double t_min, double t_max, hit_record& r
     rec.v = gamma;
     rec.mat_ptr = mp;
 
-    return rec.front_face;
+    return rec.front_face == (dot(r.direction(), this_normal) <= 0);
 }
 
 bool smoothTriangle::bounding_box(double time0, double time1, aabb& output_box) const {
