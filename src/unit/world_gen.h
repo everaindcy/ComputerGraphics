@@ -179,7 +179,7 @@ hittable_list smooth_cube() {
     auto green = make_shared<lambertian>(color(.12, .45, .15));
     auto sphere_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
 
-    auto bunny = make_shared<smoothMesh>("meshs/cube.obj", earth_surface);
+    auto bunny = make_shared<mesh>("meshs/cube.obj", earth_surface);
 
     return hittable_list(bunny);
 }
@@ -194,7 +194,7 @@ hittable_list smooth_bunny() {
     auto green = make_shared<lambertian>(color(.12, .45, .15));
     auto sphere_material = make_shared<metal>(color(0.9,0.8,0.7), 0.3);
 
-    auto bunny = make_shared<smoothMesh>("meshs/bunny_1k.obj", sphere_material);
+    auto bunny = make_shared<mesh>("meshs/bunny_1k.obj", sphere_material);
     objects.add(bunny);
 
     return objects;

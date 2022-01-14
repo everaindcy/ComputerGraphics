@@ -72,16 +72,16 @@ void surface_rev::gen_mesh() {
         //                                surface.VV[std::get<1>(surface.VF[i])],
         //                                surface.VV[std::get<2>(surface.VF[i])],
         //                                mat_ptr));
-        tris.add(make_shared<smoothTriangle>(surface.VV[std::get<0>(surface.VF[i])],
-                                             surface.VV[std::get<1>(surface.VF[i])],
-                                             surface.VV[std::get<2>(surface.VF[i])],
-                                             surface.VN[std::get<0>(surface.VF[i])],
-                                             surface.VN[std::get<1>(surface.VF[i])],
-                                             surface.VN[std::get<2>(surface.VF[i])],
-                                             mat_ptr));
+        tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
+                                       surface.VV[std::get<1>(surface.VF[i])],
+                                       surface.VV[std::get<2>(surface.VF[i])],
+                                       surface.VN[std::get<0>(surface.VF[i])],
+                                       surface.VN[std::get<1>(surface.VF[i])],
+                                       surface.VN[std::get<2>(surface.VF[i])],
+                                       mat_ptr));
     }
 
-    surface_mesh = make_shared<smoothMesh>(tris);
+    surface_mesh = make_shared<mesh>(tris);
 }
 
 bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
