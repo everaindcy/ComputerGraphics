@@ -2,6 +2,7 @@
 #define BEZIER_H
 
 #include "curve.h"
+#include "../newton.h"
 
 #include <vector>
 
@@ -15,6 +16,7 @@ public:
     virtual point3 getPoint(double t) const override;
     virtual vec3 getDir(double t) const override;
     virtual void discretize(int resolution, std::vector<curvePoint>& data) override;
+    virtual bool hit_if_rec(const ray &r, double &t, double max_dt) override;
 
 public:
     int n; // the num of points
@@ -145,8 +147,52 @@ void bezierCurve2D::discretize(int resolution, std::vector<curvePoint>& data) {
         }
 
         double t = (double)i / (double)resolution;
-        data.push_back(curvePoint{P(0, n-1, t), unit_vector(P(1, n-2, t) - P(0, n-2, t))});
+        data.push_back(curvePoint{P(0, n-1, t), unit_vector(P(1, n-2, t) - P(0, n-2, t)), t});
     }
+}
+
+// this t is on the curve
+bool bezierCurve2D::hit_if_rec(const ray &r, double &t, double max_dt) {
+    auto f = [=](double tt)->double {
+        auto rx = r.origin()[0];
+        auto ry = r.origin()[1];
+        auto rz = r.origin()[2];
+        auto dx = r.direction()[0];
+        auto dy = r.direction()[1];
+        auto dz = r.direction()[2];
+        auto p = this->getPoint(tt);
+        auto x = p[0];
+        auto y = p[1];
+
+        auto xt = rx + (dx/dy)*(y-ry);
+        auto zt = rz + (dz/dy)*(y-ry);
+        return xt*xt + zt*zt - x*x;
+    };
+    auto df = [=](double tt)->double {
+        auto rx = r.origin()[0];
+        auto ry = r.origin()[1];
+        auto rz = r.origin()[2];
+        auto dx = r.direction()[0];
+        auto dy = r.direction()[1];
+        auto dz = r.direction()[2];
+        auto p = this->getPoint(tt);
+        auto x = p[0];
+        auto y = p[1];
+        auto dir = this->getDir(tt);
+        auto x1 = dir[0];
+        auto y1 = dir[1];
+
+        auto xt = rx + (dx/dy)*(y-ry);
+        auto zt = rz + (dz/dy)*(y-ry);
+        return 2*((dx/dy)*xt*y1 + (dz/dy)*zt*y1 - x*x1);
+    };
+
+    double t_origin = t;
+    bool hitting = newton(t, f, df);
+    if (abs(t-t_origin) > max_dt | t > 1 | t < 0) {
+        return false;
+    }
+    return hitting;
 }
 
 #endif

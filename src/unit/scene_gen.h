@@ -121,6 +121,15 @@ void scene_gen(scene &sce, int idx) {
             sce.vfov = 25.0;
             break;
 
+        case 20:
+            sce.objs = curves_no_mesh();
+            sce.background = color(0.70, 0.80, 1.00);
+            sce.lookfrom = point3(0,10,14);
+            sce.lookat = point3(0,0,0);
+            sce.image_width = 800;
+            sce.vfov = 25.0;
+            break;
+
         case 16:
             sce.objs = bunny2();
             sce.background = color(0.7,0.8,0.9);
@@ -134,11 +143,23 @@ void scene_gen(scene &sce, int idx) {
             break;
         
         case 17:
-            sce.objs = parse_obj("meshs/CornellBox-Original.obj", "meshs/", false, true, make_shared<lambertian>(color(0.7, 0.3, 0.2)));
+            sce.objs = parse_obj("meshs/dragon.obj", "", true, true, make_shared<lambertian>(color(0.3, 0.2, 0.7)));
             sce.background = color(0.7,0.8,0.9);
-            sce.lookfrom = point3(0,0.2,5);
-            sce.lookat = point3(0,1,0);
-            sce.vfov = 40.0;
+            sce.lookfrom = point3(2.5,0.2,0);
+            sce.lookat = point3(0,0,0);
+            sce.vfov = 25.0;
+            sce.image_width = 800;
+            sce.aspect_ratio = 16.0/9.0;
+            sce.aperture = 0;
+            sce.dist_to_focus = 0.8;
+            break;
+
+        case 18:
+            sce.objs = parse_obj("meshs/bunny/bunny.obj", "meshs/bunny/", false, false, make_shared<lambertian>(color(0.3, 0.2, 0.7)));
+            sce.background = color(0.7,0.8,0.9);
+            sce.lookfrom = point3(0,2,5);
+            sce.lookat = point3(0,0.7,0);
+            sce.vfov = 25.0;
             sce.image_width = 800;
             sce.aspect_ratio = 16.0/9.0;
             sce.aperture = 0;

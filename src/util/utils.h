@@ -9,5 +9,6 @@
 #include "use_std_image.h"
 #include "use_tinyobjloader.h"
 #include "image.h"
+#include "newton.h"
 
 #endif

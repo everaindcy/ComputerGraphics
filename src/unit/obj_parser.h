@@ -75,28 +75,28 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
                      attrib.vertices[3*idx_c.vertex_index+2]};
 
             if (idx_a.normal_index >= 0) {
-                vn[0] = {attrib.vertices[3*idx_a.normal_index+0],
-                         attrib.vertices[3*idx_a.normal_index+1],
-                         attrib.vertices[3*idx_a.normal_index+2]};
-                vn[1] = {attrib.vertices[3*idx_b.normal_index+0],
-                         attrib.vertices[3*idx_b.normal_index+1],
-                         attrib.vertices[3*idx_b.normal_index+2]};
-                vn[2] = {attrib.vertices[3*idx_c.normal_index+0],
-                         attrib.vertices[3*idx_c.normal_index+1],
-                         attrib.vertices[3*idx_c.normal_index+2]};
+                vn[0] = {attrib.normals[3*idx_a.normal_index+0],
+                         attrib.normals[3*idx_a.normal_index+1],
+                         attrib.normals[3*idx_a.normal_index+2]};
+                vn[1] = {attrib.normals[3*idx_b.normal_index+0],
+                         attrib.normals[3*idx_b.normal_index+1],
+                         attrib.normals[3*idx_b.normal_index+2]};
+                vn[2] = {attrib.normals[3*idx_c.normal_index+0],
+                         attrib.normals[3*idx_c.normal_index+1],
+                         attrib.normals[3*idx_c.normal_index+2]};
             } else {
                 use_vn_this = false;
             }
 
             if (idx_a.texcoord_index >= 0) {
-                vt[0] = {attrib.vertices[2*idx_a.normal_index+0],
-                         attrib.vertices[2*idx_a.normal_index+1],
+                vt[0] = {attrib.texcoords[2*idx_a.normal_index+0],
+                         attrib.texcoords[2*idx_a.normal_index+1],
                          0};
-                vt[1] = {attrib.vertices[2*idx_b.normal_index+0],
-                         attrib.vertices[2*idx_b.normal_index+1],
+                vt[1] = {attrib.texcoords[2*idx_b.normal_index+0],
+                         attrib.texcoords[2*idx_b.normal_index+1],
                          0};
-                vt[2] = {attrib.vertices[2*idx_c.normal_index+0],
-                         attrib.vertices[2*idx_c.normal_index+1],
+                vt[2] = {attrib.texcoords[2*idx_c.normal_index+0],
+                         attrib.texcoords[2*idx_c.normal_index+1],
                          0};
             } else {
                 use_vt_this = false;

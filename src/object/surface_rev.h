@@ -1,7 +1,7 @@
 #ifndef SURFACE_REV_H
 #define SURFACE_REV_H
 
-#define Resolution 100
+#define Resolution_default 100
 
 #include "hittable.h"
 #include "mesh.h"
@@ -10,8 +10,13 @@
 class surface_rev : public hittable {
 public:
     surface_rev() {}
-    surface_rev(shared_ptr<curve> c, shared_ptr<material> m)
-        : cv(c), mat_ptr(m) {gen_mesh();};
+    surface_rev(shared_ptr<curve> c, shared_ptr<material> m, bool use_mesh = true, int resolution = Resolution_default)
+        : cv(c), mat_ptr(m), use_mesh(use_mesh), resolution(resolution) {
+        if (use_mesh) {gen_mesh();}
+        else {gen_out_mesh();}
+    }
+    surface_rev(shared_ptr<curve> c, shared_ptr<hittable> out_mesh, shared_ptr<material> m)
+        : cv(c), mat_ptr(m), out_mesh(out_mesh), use_mesh(true) {}
 
     virtual bool hit(
         const ray& r, double t_min, double t_max, hit_record& rec) const override;
@@ -24,40 +29,41 @@ public:
     shared_ptr<material> mat_ptr;
     
     shared_ptr<hittable> surface_mesh;
+    shared_ptr<hittable> out_mesh;
+
+    bool use_mesh;
+    int resolution;
 
 private:
     void gen_mesh();
+    void gen_out_mesh();
 };
 
 void surface_rev::gen_mesh() {
     // Definition for drawable surface.
     typedef std::tuple<unsigned, unsigned, unsigned> Tup3u;
-    // Surface is just a struct that contains vertices, normals, and
-    // faces.  VV[i] is the position of vertex i, and VN[i] is the normal
-    // of vertex i.  A face is a triple i,j,k corresponding to a triangle
-    // with (vertex i, normal i), (vertex j, normal j), ...
-    // Currently this struct is computed every time when canvas refreshes.
-    // You can store this as member function to accelerate rendering.
     struct Surface {
         std::vector<point3> VV;
         std::vector<vec3> VN;
+        std::vector<vec3> VT;
         std::vector<Tup3u> VF;
     } surface;
 
     std::vector<curvePoint> curvePoints;
-    cv->discretize(Resolution, curvePoints);
+    cv->discretize(resolution, curvePoints);
 
-    const int steps = Resolution/2;
+    const int steps = resolution/2;
     for (unsigned int ci = 0; ci < curvePoints.size(); ++ci) {
         const curvePoint &cp = curvePoints[ci];
         for (unsigned int i = 0; i < steps; ++i) {
             double t = (double)i / steps;
             double degree = 360 * t;
             point3 pnew = transformPoint(mat4::rotateY(degree), cp.v);
-            vec3 pNormal = cross(cp.dir, vec3(0,0,1));
+            vec3 pNormal = unit_vector(cross(cp.dir, vec3(0,0,1)));
             vec3 nnew = transformDirection(mat4::rotateY(degree), pNormal);
             surface.VV.push_back(pnew);
             surface.VN.push_back(nnew);
+            surface.VT.push_back(vec3(t, cp.t, 0));
             int i1 = (i + 1 == steps) ? 0 : i + 1;
             if (ci != curvePoints.size() - 1) {
                 surface.VF.emplace_back((ci + 1) * steps + i, ci * steps + i1, ci * steps + i);
@@ -68,28 +74,132 @@ void surface_rev::gen_mesh() {
 
     hittable_list tris;
     for (unsigned i = 0; i < surface.VF.size(); i++) {
-        // tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
-        //                                surface.VV[std::get<1>(surface.VF[i])],
-        //                                surface.VV[std::get<2>(surface.VF[i])],
-        //                                mat_ptr));
         tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
                                        surface.VV[std::get<1>(surface.VF[i])],
                                        surface.VV[std::get<2>(surface.VF[i])],
                                        surface.VN[std::get<0>(surface.VF[i])],
                                        surface.VN[std::get<1>(surface.VF[i])],
                                        surface.VN[std::get<2>(surface.VF[i])],
-                                       mat_ptr));
+                                       surface.VT[std::get<0>(surface.VF[i])],
+                                       surface.VT[std::get<1>(surface.VF[i])],
+                                       surface.VT[std::get<2>(surface.VF[i])],
+                                       mat_ptr, true, true));
     }
 
     surface_mesh = make_shared<mesh>(tris);
 }
 
+void surface_rev::gen_out_mesh() {
+    // Definition for drawable surface.
+    typedef std::tuple<unsigned, unsigned, unsigned> Tup3u;
+    struct Surface {
+        std::vector<point3> VV;
+        std::vector<vec3> VN;
+        std::vector<vec3> VT;
+        std::vector<Tup3u> VF;
+    } surface;
+
+    std::vector<curvePoint> curvePoints;
+    cv->discretize(resolution, curvePoints);
+
+    const int steps = resolution/2;
+    for (unsigned int ci = 0; ci < curvePoints.size(); ++ci) {
+        const curvePoint &cp = curvePoints[ci];
+        for (unsigned int i = 0; i < steps; ++i) {
+            double t = (double)i / steps;
+            double degree = 360 * t;
+            point3 pnew = transformPoint(mat4::rotateY(degree), cp.v);
+            vec3 pNormal = unit_vector(cross(cp.dir, vec3(0,0,1)));
+            vec3 nnew = transformDirection(mat4::rotateY(degree), pNormal);
+            surface.VV.push_back(pnew);
+            surface.VN.push_back(nnew);
+            surface.VT.push_back(vec3(t, cp.t, 0));
+            int i1 = (i + 1 == steps) ? 0 : i + 1;
+            if (ci != curvePoints.size() - 1) {
+                surface.VF.emplace_back((ci + 1) * steps + i, ci * steps + i1, ci * steps + i);
+                surface.VF.emplace_back((ci + 1) * steps + i, (ci + 1) * steps + i1, ci * steps + i1);
+            }
+        }
+    }
+
+    hittable_list tris;
+    for (unsigned i = 0; i < surface.VF.size(); i++) {
+        tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
+                                       surface.VV[std::get<1>(surface.VF[i])],
+                                       surface.VV[std::get<2>(surface.VF[i])],
+                                       surface.VN[std::get<0>(surface.VF[i])],
+                                       surface.VN[std::get<1>(surface.VF[i])],
+                                       surface.VN[std::get<2>(surface.VF[i])],
+                                       surface.VT[std::get<0>(surface.VF[i])],
+                                       surface.VT[std::get<1>(surface.VF[i])],
+                                       surface.VT[std::get<2>(surface.VF[i])],
+                                       mat_ptr, false, true));
+    }
+
+    out_mesh = make_shared<mesh>(tris);
+}
+
 bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
-    return surface_mesh->hit(r, t_min, t_max, rec);
+    if (use_mesh) {
+        return surface_mesh->hit(r, t_min, t_max, rec);
+    }
+
+    if (!out_mesh->hit(r, t_min, t_max, rec)) {
+        return false;
+    }
+
+    double t_cv = rec.v;
+    if (!cv->hit_if_rec(r, t_cv, 5.0/resolution)) return false;
+
+    // std::cerr << "hit at " << std::to_string(t_cv) << std::endl;
+
+    auto hit_point_cv = cv->getPoint(t_cv);
+    auto hit_dir_cv = cv->getDir(t_cv);
+
+    auto d = hit_point_cv[0];
+    auto y = hit_point_cv[1];
+    auto rx = r.origin()[0];
+    auto ry = r.origin()[1];
+    auto rz = r.origin()[2];
+    auto dx = r.direction()[0];
+    auto dy = r.direction()[1];
+    auto dz = r.direction()[2];
+
+    double t_r;
+    if (!near_zero(dy)) {
+        t_r = (y-ry)/dy;
+    }
+    if (near_zero(dy) || !near_zero((rx+dx*t_r)*(rx+dx*t_r) + (rz+dz*t_r)*(rz+dz*t_r) - d*d)) {
+        auto a = dx*dx+dz*dz;
+        auto b = rx*dx+rz*dz;
+        auto c = rx*rx+rz*rz-d*d;
+        auto del2 = b*b-a*c;
+        if (del2 < 0) return false;
+        auto del = sqrt(del2);
+        t_r = (-b-del)/a;
+        if (t_r < t_min) {t_r = (-b+del)/a;}
+    }
+    if (!near_zero(ry+dy*t_r-y)) return false;
+    if (t_r < t_min || t_r > t_max) return false;
+
+    rec.t = t_r;
+    rec.p = r.at(rec.t);
+    auto phi = (d <= 0) ? (atan2(-rec.p.z(), rec.p.x()) + pi) : (atan2(rec.p.z(), -rec.p.x()) + pi);
+    auto outward_normal = unit_vector(transformDirection(mat4::rotateY(180*phi/pi), cross(hit_dir_cv,vec3(0,0,1))));
+    rec.set_face_normal(r, outward_normal);
+    rec.u = phi/(2*pi);
+    rec.v = t_cv;
+    rec.mat_ptr = mat_ptr;
+
+    return true;
 }
 
 bool surface_rev::bounding_box(double time0, double time1, aabb& output_box) const {
-    return surface_mesh->bounding_box(time0, time1, output_box);
+    if (use_mesh) {
+        return surface_mesh->bounding_box(time0, time1, output_box);
+    } else {
+        return out_mesh->bounding_box(time0, time1, output_box);
+    }
 }
 
 #endif

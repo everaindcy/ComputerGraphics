@@ -316,8 +316,37 @@ hittable_list curves() {
     return objects;
 }
 
-hittable_list bunny_more() {
+hittable_list curves_no_mesh() {
+    hittable_list objects;
+
+    auto earth_texture = make_shared<image_texture>("textures/earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto metal_material = make_shared<metal>(color(0.9,0.8,0.7), 0);
+
+    double a[100] = {-2, -4, 0, -2, -3, -5};
+    double b[100] = {2, 0, 0, -2, -5, -3};
+    int n = 4;
+    auto curve_face = make_shared<surface_rev>(make_shared<bezierCurve2D>(a, b, n), metal_material, false, 50);
+    objects.add(curve_face);
     
+    auto sphere_material = make_shared<lambertian>(color(0.7, 0.2, 0.3));
+    objects.add(make_shared<sphere>(point3(-2, -1.5, 2), 0.5, sphere_material));
+    
+    sphere_material = make_shared<lambertian>(color(0.1, 0.3, 0.6));
+    objects.add(make_shared<sphere>(point3(1.2, -1.5, 2), 0.5, sphere_material));
+
+    auto ground_texture = make_shared<checker_texture>(color(1,1,1), color(0.3,0.3,0.3));
+    auto ground_surface = make_shared<lambertian>(ground_texture);
+    auto ground = make_shared<sphere>(point3(0, -1000, 0), 1000-2, ground_surface);
+    objects.add(ground);
+
+    return objects;
+}
+
+hittable_list bunny_more() {
+
 }
 
 #endif
