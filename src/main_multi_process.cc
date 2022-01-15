@@ -34,7 +34,7 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 
 int main() {
     scene sce;
-    scene_gen(sce, 15);
+    scene_gen(sce, 17);
 
     const int num_process = 30;
     const int task_per_process = (sce.image_height+num_process-1)/num_process;

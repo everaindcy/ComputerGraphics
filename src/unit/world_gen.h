@@ -5,6 +5,7 @@
 #include "../object/objects.h"
 #include "../texture/textures.h"
 #include "../material/materials.h"
+#include "obj_parser.h"
 
 #include <iostream>
 
