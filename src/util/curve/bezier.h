@@ -197,7 +197,7 @@ bool bezierCurve2D::hit_if_rec(const ray &r, double &t, double &t1, double max_d
     double t_origin = t;
     double t1_origin = t1;
     bool hitting = newton2x2(t, t1, f, g, dft, dft1, dgt, dgt1);
-    if (/* fabs(t-t_origin) > max_dt |  */t > 1-DELTA | t < DELTA | fabs(t1-t1_origin) > max_dt) {
+    if (/* fabs(t-t_origin) > max_dt ||  */t > 1-DELTA || t < DELTA || fabs(t1-t1_origin) > max_dt) {
         return false;
     }
     return hitting;

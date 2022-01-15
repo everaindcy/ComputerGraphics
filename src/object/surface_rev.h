@@ -157,24 +157,38 @@ bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec)
 
     hit_record rec_in, rec_out;
     bool hit_in = in_mesh->hit(r, t_min, t_max, rec_in);
+    // if (hit_in && (rec_in.v > 1-DELTA || rec_in.v < DELTA)) hit_in = false;
     bool hit_out = out_mesh->hit(r, t_min, t_max, rec_out);
+    // if (hit_out && (rec_out.v > 1-DELTA || rec_out.v < DELTA)) hit_out = false;
+
     if (!hit_in && !hit_out) return false;
+
+    bool do_next = /* hit_in && hit_out */ true;
+    double next_t_min = t_min; // use this to find another hit point of the surface
 
     double t_cv_in  = rec_in.v;
     double t_r_in   = rec_in.t;
     double t_cv_out = rec_out.v;
     double t_r_out  = rec_out.t;
     if (hit_in) {
+        next_t_min = fmax(next_t_min, t_r_in);
         hit_in = cv->hit_if_rec(r, t_cv_in, t_r_in, 10.0/resolution);
         if (t_r_in < t_min | t_r_in > t_max) hit_in = false;
     }
     if (hit_out) {
+        next_t_min = fmax(next_t_min, t_r_out);
         hit_out = cv->hit_if_rec(r, t_cv_out, t_r_out, 10.0/resolution);
         if (t_r_out < t_min | t_r_out > t_max) hit_out = false;
     }
 
     double t_r, t_cv;
-    if (!hit_in && !hit_out) return false;
+    if (!hit_in && !hit_out) {
+        if (do_next) {
+            return hit(r, next_t_min+DELTA, t_max, rec); // find another hit point
+        } else {
+            return false;
+        }
+    }
     if (hit_in && !hit_out) {
         t_r = t_r_in;
         t_cv = t_cv_in;

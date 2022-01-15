@@ -126,8 +126,10 @@ void scene_gen(scene &sce, int idx) {
             sce.background = color(0.70, 0.80, 1.00);
             sce.lookfrom = point3(0,10,14);
             sce.lookat = point3(0,0,0);
-            sce.image_width = 800;
+            sce.image_width = 1080;
             sce.vfov = 25.0;
+            // sce.samples_per_pixel = 1000;
+            // sce.max_depth = 200;
             break;
 
         case 16:
