@@ -61,6 +61,8 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
             point3 vv[3];
             vec3 vn[3];
             vec3 vt[3];
+            bool use_vn_this = use_vn;
+            bool use_vt_this = use_vt;
 
             vv[0] = {attrib.vertices[3*idx_a.vertex_index+0],
                      attrib.vertices[3*idx_a.vertex_index+1],
@@ -82,6 +84,8 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
                 vn[2] = {attrib.vertices[3*idx_c.normal_index+0],
                          attrib.vertices[3*idx_c.normal_index+1],
                          attrib.vertices[3*idx_c.normal_index+2]};
+            } else {
+                use_vn_this = false;
             }
 
             if (idx_a.texcoord_index >= 0) {
@@ -94,6 +98,8 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
                 vt[2] = {attrib.vertices[2*idx_c.normal_index+0],
                          attrib.vertices[2*idx_c.normal_index+1],
                          0};
+            } else {
+                use_vt_this = false;
             }
 
             auto mat_idx = shape.mesh.material_ids[i];
@@ -102,7 +108,7 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
             tris.add(make_shared<triangle>(vv[0], vv[1], vv[2],
                                            vn[0], vn[1], vn[2],
                                            vt[0], vt[1], vt[2],
-                                           default_mat, use_vn, use_vt));
+                                           default_mat, use_vn_this, use_vt_this));
         }
 
         auto mh = make_shared<mesh>(tris);

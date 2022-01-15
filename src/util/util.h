@@ -6,6 +6,8 @@
 #include <memory>
 #include <random>
 
+#define DELTA 1e-6
+
 // Usings
 
 using std::shared_ptr;
@@ -18,6 +20,10 @@ const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
 
 // Utility Functions
+
+inline bool near_zero(double dat) {
+    return (dat >= -DELTA) && (dat <= DELTA);
+}
 
 inline double degrees_to_radians(double degrees) {
     return degrees * pi / 180.0;

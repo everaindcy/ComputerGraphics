@@ -33,8 +33,11 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 }
 
 int main() {
+    std::cerr << "Begin scene parse...\n" << std::flush;
     scene sce;
     scene_gen(sce, 17);
+
+    std::cerr << "generate processes...\n" << std::flush;
 
     const int num_process = 30;
     const int task_per_process = (sce.image_height+num_process-1)/num_process;
@@ -57,7 +60,7 @@ int main() {
     // std::cerr << std::to_string(getpid())+" task = ["+std::to_string(taskbegin)+", "+std::to_string(taskend)+")\n" << std::flush; //]
     image img(sce.image_width, taskend-taskbegin);
 
-
+if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "Begin Path tracing...\n" << std::flush;
 auto start = std::chrono::system_clock::now();
 int finished = 0;
 if(taskend==sce.image_height-num_process/2*task_per_process) std::cerr << "\rPixels finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height*sce.image_width)+" | "+std::to_string(100.0*finished/sce.image_height/sce.image_width)+"%"  << std::flush;

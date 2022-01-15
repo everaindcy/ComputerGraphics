@@ -316,4 +316,8 @@ hittable_list curves() {
     return objects;
 }
 
+hittable_list bunny_more() {
+    
+}
+
 #endif
