@@ -16,7 +16,7 @@ public:
         : mp(m) {
         create_mesh(filename, use_vn, use_vt);
     }
-    mesh(const hittable_list& tris) 
+    mesh(hittable_list& tris) 
         : triangles(make_shared<bvh_node>(tris, 0,0)) {}
 
     virtual bool hit(
