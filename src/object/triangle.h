@@ -69,7 +69,7 @@ bool triangle::hit(const ray& r, double t_min, double t_max, hit_record& rec) co
     double cos1 = dot(unit_vector(r.direction()), unit_vector(b-a));
     double cos2 = dot(unit_vector(r.direction()), unit_vector(c-b));
     double cos3 = dot(unit_vector(r.direction()), unit_vector(a-c));
-    if (near_zero(cos1) && near_zero(cos2) && near_zero(cos3)) {
+    if (use_vn && near_zero(cos1) && near_zero(cos2) && near_zero(cos3)) {
         return false;
     }
 
@@ -112,7 +112,7 @@ bool triangle::hit(const ray& r, double t_min, double t_max, hit_record& rec) co
     rec.v = uv[1];
     rec.mat_ptr = mp;
 
-    return /* rec.front_face == (dot(r.direction(), normal) <= 0) */ true;
+    return true;
 }
 
 bool triangle::bounding_box(double time0, double time1, aabb& output_box) const {

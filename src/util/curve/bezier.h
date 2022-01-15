@@ -16,7 +16,7 @@ public:
     virtual point3 getPoint(double t) const override;
     virtual vec3 getDir(double t) const override;
     virtual void discretize(int resolution, std::vector<curvePoint>& data) override;
-    virtual bool hit_if_rec(const ray &r, double &t, double max_dt) override;
+    virtual bool hit_if_rec(const ray &r, double &t, double &t1, double max_dt) override;
 
 public:
     int n; // the num of points
@@ -151,45 +151,53 @@ void bezierCurve2D::discretize(int resolution, std::vector<curvePoint>& data) {
     }
 }
 
-// this t is on the curve
-bool bezierCurve2D::hit_if_rec(const ray &r, double &t, double max_dt) {
-    auto f = [=](double tt)->double {
-        auto rx = r.origin()[0];
-        auto ry = r.origin()[1];
-        auto rz = r.origin()[2];
-        auto dx = r.direction()[0];
-        auto dy = r.direction()[1];
-        auto dz = r.direction()[2];
+// t is on the curve, t1 is on the ray
+bool bezierCurve2D::hit_if_rec(const ray &r, double &t, double &t1, double max_dt) {
+    auto rx = r.origin()[0];
+    auto ry = r.origin()[1];
+    auto rz = r.origin()[2];
+    auto dx = r.direction()[0];
+    auto dy = r.direction()[1];
+    auto dz = r.direction()[2];
+
+    auto f = [=](double tt, double tt1)->double {
         auto p = this->getPoint(tt);
         auto x = p[0];
         auto y = p[1];
-
-        auto xt = rx + (dx/dy)*(y-ry);
-        auto zt = rz + (dz/dy)*(y-ry);
-        return xt*xt + zt*zt - x*x;
+        return (ry + dy*tt1) - y;
     };
-    auto df = [=](double tt)->double {
-        auto rx = r.origin()[0];
-        auto ry = r.origin()[1];
-        auto rz = r.origin()[2];
-        auto dx = r.direction()[0];
-        auto dy = r.direction()[1];
-        auto dz = r.direction()[2];
+    auto g = [=](double tt, double tt1)->double {
+        auto p = this->getPoint(tt);
+        auto x = p[0];
+        auto y = p[1];
+        return (rx+dx*tt1)*(rx+dx*tt1) + (rz+dz*tt1)*(rz+dz*tt1) - x*x;
+    };
+    auto dft = [=](double tt, double tt1)->double {
+        auto dir = this->getDir(tt);
+        auto x1 = dir[0];
+        auto y1 = dir[1];
+        return -y1;
+    };
+    auto dft1 = [=](double tt, double tt1)->double {
+        return dy;
+    };
+    auto dgt = [=](double tt, double tt1)->double {
         auto p = this->getPoint(tt);
         auto x = p[0];
         auto y = p[1];
         auto dir = this->getDir(tt);
         auto x1 = dir[0];
         auto y1 = dir[1];
-
-        auto xt = rx + (dx/dy)*(y-ry);
-        auto zt = rz + (dz/dy)*(y-ry);
-        return 2*((dx/dy)*xt*y1 + (dz/dy)*zt*y1 - x*x1);
+        return -2*x*x1;
+    };
+    auto dgt1 = [=](double tt, double tt1)->double {
+        return 2*(rx+dx*tt1)*dx+2*(rz+dz*tt1)*dz;
     };
 
     double t_origin = t;
-    bool hitting = newton(t, f, df);
-    if (abs(t-t_origin) > max_dt | t > 1 | t < 0) {
+    double t1_origin = t1;
+    bool hitting = newton2x2(t, t1, f, g, dft, dft1, dgt, dgt1);
+    if (/* fabs(t-t_origin) > max_dt |  */t > 1-DELTA | t < DELTA | fabs(t1-t1_origin) > max_dt) {
         return false;
     }
     return hitting;

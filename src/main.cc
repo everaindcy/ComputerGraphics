@@ -42,7 +42,7 @@ int finished = 0;
 auto start = std::chrono::system_clock::now();
     std::cerr << "\rRow finished: "+std::to_string(finished)+"/"+std::to_string(sce.image_height)+" | "+std::to_string(100.0*finished/sce.image_height)+"%"  << std::flush;
 // omp_set_num_threads(30);
-#pragma omp parallel for schedule(dynamic, 10)
+// #pragma omp parallel for schedule(dynamic, 10)
     for (int n = 0; n < sce.image_height; n++) {
         int j = sce.image_height - 1 - n;
         for (int i = 0; i < sce.image_width; ++i) {

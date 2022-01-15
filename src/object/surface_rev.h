@@ -12,11 +12,11 @@ public:
     surface_rev() {}
     surface_rev(shared_ptr<curve> c, shared_ptr<material> m, bool use_mesh = true, int resolution = Resolution_default)
         : cv(c), mat_ptr(m), use_mesh(use_mesh), resolution(resolution) {
-        if (use_mesh) {gen_mesh();}
-        else {gen_out_mesh();}
+        if (use_mesh) {gen_display_mesh();}
+        else {gen_box_mesh();}
     }
-    surface_rev(shared_ptr<curve> c, shared_ptr<hittable> out_mesh, shared_ptr<material> m)
-        : cv(c), mat_ptr(m), out_mesh(out_mesh), use_mesh(true) {}
+    surface_rev(shared_ptr<curve> c, shared_ptr<hittable> _in_mesh, shared_ptr<hittable> _out_mesh, shared_ptr<material> m)
+        : cv(c), mat_ptr(m), in_mesh(_in_mesh), out_mesh(_out_mesh), use_mesh(false) {}
 
     virtual bool hit(
         const ray& r, double t_min, double t_max, hit_record& rec) const override;
@@ -28,18 +28,19 @@ public:
     shared_ptr<curve> cv;
     shared_ptr<material> mat_ptr;
     
-    shared_ptr<hittable> surface_mesh;
+    // in_mesh is in the surface, out_mesh is out of it
+    shared_ptr<hittable> in_mesh;
     shared_ptr<hittable> out_mesh;
 
     bool use_mesh;
     int resolution;
 
 private:
-    void gen_mesh();
-    void gen_out_mesh();
+    void gen_display_mesh();
+    void gen_box_mesh();
 };
 
-void surface_rev::gen_mesh() {
+void surface_rev::gen_display_mesh() {
     // Definition for drawable surface.
     typedef std::tuple<unsigned, unsigned, unsigned> Tup3u;
     struct Surface {
@@ -72,24 +73,23 @@ void surface_rev::gen_mesh() {
         }
     }
 
-    hittable_list tris;
+    hittable_list tris_in;
     for (unsigned i = 0; i < surface.VF.size(); i++) {
-        tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
-                                       surface.VV[std::get<1>(surface.VF[i])],
-                                       surface.VV[std::get<2>(surface.VF[i])],
-                                       surface.VN[std::get<0>(surface.VF[i])],
-                                       surface.VN[std::get<1>(surface.VF[i])],
-                                       surface.VN[std::get<2>(surface.VF[i])],
-                                       surface.VT[std::get<0>(surface.VF[i])],
-                                       surface.VT[std::get<1>(surface.VF[i])],
-                                       surface.VT[std::get<2>(surface.VF[i])],
-                                       mat_ptr, true, true));
+        tris_in.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
+                                          surface.VV[std::get<1>(surface.VF[i])],
+                                          surface.VV[std::get<2>(surface.VF[i])],
+                                          surface.VN[std::get<0>(surface.VF[i])],
+                                          surface.VN[std::get<1>(surface.VF[i])],
+                                          surface.VN[std::get<2>(surface.VF[i])],
+                                          surface.VT[std::get<0>(surface.VF[i])],
+                                          surface.VT[std::get<1>(surface.VF[i])],
+                                          surface.VT[std::get<2>(surface.VF[i])],
+                                          mat_ptr, true, true));
     }
-
-    surface_mesh = make_shared<mesh>(tris);
+    in_mesh = make_shared<mesh>(tris_in);
 }
 
-void surface_rev::gen_out_mesh() {
+void surface_rev::gen_box_mesh() {
     // Definition for drawable surface.
     typedef std::tuple<unsigned, unsigned, unsigned> Tup3u;
     struct Surface {
@@ -122,65 +122,81 @@ void surface_rev::gen_out_mesh() {
         }
     }
 
-    hittable_list tris;
+    double scaler = 1/cos(2*pi/steps) + DELTA;
+    hittable_list tris_in, tris_out;
     for (unsigned i = 0; i < surface.VF.size(); i++) {
-        tris.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
-                                       surface.VV[std::get<1>(surface.VF[i])],
-                                       surface.VV[std::get<2>(surface.VF[i])],
-                                       surface.VN[std::get<0>(surface.VF[i])],
-                                       surface.VN[std::get<1>(surface.VF[i])],
-                                       surface.VN[std::get<2>(surface.VF[i])],
-                                       surface.VT[std::get<0>(surface.VF[i])],
-                                       surface.VT[std::get<1>(surface.VF[i])],
-                                       surface.VT[std::get<2>(surface.VF[i])],
-                                       mat_ptr, false, true));
+        tris_in.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])],
+                                          surface.VV[std::get<1>(surface.VF[i])],
+                                          surface.VV[std::get<2>(surface.VF[i])],
+                                          surface.VN[std::get<0>(surface.VF[i])],
+                                          surface.VN[std::get<1>(surface.VF[i])],
+                                          surface.VN[std::get<2>(surface.VF[i])],
+                                          surface.VT[std::get<0>(surface.VF[i])],
+                                          surface.VT[std::get<1>(surface.VF[i])],
+                                          surface.VT[std::get<2>(surface.VF[i])],
+                                          mat_ptr, false, true));
+        tris_out.add(make_shared<triangle>(surface.VV[std::get<0>(surface.VF[i])]*scaler,
+                                           surface.VV[std::get<1>(surface.VF[i])]*scaler,
+                                           surface.VV[std::get<2>(surface.VF[i])]*scaler,
+                                           surface.VN[std::get<0>(surface.VF[i])],
+                                           surface.VN[std::get<1>(surface.VF[i])],
+                                           surface.VN[std::get<2>(surface.VF[i])],
+                                           surface.VT[std::get<0>(surface.VF[i])],
+                                           surface.VT[std::get<1>(surface.VF[i])],
+                                           surface.VT[std::get<2>(surface.VF[i])],
+                                           mat_ptr, false, true));
     }
-
-    out_mesh = make_shared<mesh>(tris);
+    in_mesh = make_shared<mesh>(tris_in);
+    out_mesh = make_shared<mesh>(tris_out);
 }
 
 bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
     if (use_mesh) {
-        return surface_mesh->hit(r, t_min, t_max, rec);
+        return in_mesh->hit(r, t_min, t_max, rec);
     }
 
-    if (!out_mesh->hit(r, t_min, t_max, rec)) {
-        return false;
+    hit_record rec_in, rec_out;
+    bool hit_in = in_mesh->hit(r, t_min, t_max, rec_in);
+    bool hit_out = out_mesh->hit(r, t_min, t_max, rec_out);
+    if (!hit_in && !hit_out) return false;
+
+    double t_cv_in  = rec_in.v;
+    double t_r_in   = rec_in.t;
+    double t_cv_out = rec_out.v;
+    double t_r_out  = rec_out.t;
+    if (hit_in) {
+        hit_in = cv->hit_if_rec(r, t_cv_in, t_r_in, 10.0/resolution);
+        if (t_r_in < t_min | t_r_in > t_max) hit_in = false;
+    }
+    if (hit_out) {
+        hit_out = cv->hit_if_rec(r, t_cv_out, t_r_out, 10.0/resolution);
+        if (t_r_out < t_min | t_r_out > t_max) hit_out = false;
     }
 
-    double t_cv = rec.v;
-    if (!cv->hit_if_rec(r, t_cv, 5.0/resolution)) return false;
-
-    // std::cerr << "hit at " << std::to_string(t_cv) << std::endl;
+    double t_r, t_cv;
+    if (!hit_in && !hit_out) return false;
+    if (hit_in && !hit_out) {
+        t_r = t_r_in;
+        t_cv = t_cv_in;
+    }
+    if (!hit_in && hit_out) {
+        t_r = t_r_out;
+        t_cv = t_cv_out;
+    }
+    if (hit_in && hit_out) {
+        if (t_r_in < t_r_out) {
+            t_r = t_r_in;
+            t_cv = t_cv_in;
+        } else {
+            t_r = t_r_out;
+            t_cv = t_cv_out;
+        }
+    }
 
     auto hit_point_cv = cv->getPoint(t_cv);
-    auto hit_dir_cv = cv->getDir(t_cv);
-
     auto d = hit_point_cv[0];
     auto y = hit_point_cv[1];
-    auto rx = r.origin()[0];
-    auto ry = r.origin()[1];
-    auto rz = r.origin()[2];
-    auto dx = r.direction()[0];
-    auto dy = r.direction()[1];
-    auto dz = r.direction()[2];
-
-    double t_r;
-    if (!near_zero(dy)) {
-        t_r = (y-ry)/dy;
-    }
-    if (near_zero(dy) || !near_zero((rx+dx*t_r)*(rx+dx*t_r) + (rz+dz*t_r)*(rz+dz*t_r) - d*d)) {
-        auto a = dx*dx+dz*dz;
-        auto b = rx*dx+rz*dz;
-        auto c = rx*rx+rz*rz-d*d;
-        auto del2 = b*b-a*c;
-        if (del2 < 0) return false;
-        auto del = sqrt(del2);
-        t_r = (-b-del)/a;
-        if (t_r < t_min) {t_r = (-b+del)/a;}
-    }
-    if (!near_zero(ry+dy*t_r-y)) return false;
-    if (t_r < t_min || t_r > t_max) return false;
+    auto hit_dir_cv = cv->getDir(t_cv);
 
     rec.t = t_r;
     rec.p = r.at(rec.t);
@@ -196,10 +212,34 @@ bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec)
 
 bool surface_rev::bounding_box(double time0, double time1, aabb& output_box) const {
     if (use_mesh) {
-        return surface_mesh->bounding_box(time0, time1, output_box);
+        return in_mesh->bounding_box(time0, time1, output_box);
     } else {
         return out_mesh->bounding_box(time0, time1, output_box);
     }
 }
+
+
+    // auto rx = r.origin()[0];
+    // auto ry = r.origin()[1];
+    // auto rz = r.origin()[2];
+    // auto dx = r.direction()[0];
+    // auto dy = r.direction()[1];
+    // auto dz = r.direction()[2];
+
+    // double t_r;
+    // if (!near_zero(dy)) {
+    //     t_r = (y-ry)/dy;
+    // }
+    // if (near_zero(dy) || !near_zero((rx+dx*t_r)*(rx+dx*t_r) + (rz+dz*t_r)*(rz+dz*t_r) - d*d)) {
+    //     auto a = dx*dx+dz*dz;
+    //     auto b = rx*dx+rz*dz;
+    //     auto c = rx*rx+rz*rz-d*d;
+    //     auto del2 = b*b-a*c;
+    //     if (del2 < 0) return false;
+    //     auto del = sqrt(del2);
+    //     t_r = (-b-del)/a;
+    //     if (t_r < t_min) {t_r = (-b+del)/a;}
+    // }
+    // if (!near_zero(ry+dy*t_r-y)) return false;
 
 #endif

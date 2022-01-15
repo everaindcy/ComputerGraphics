@@ -22,7 +22,7 @@ public:
     virtual point3 getPoint(double t) const = 0;
     virtual vec3 getDir(double t) const = 0;
     virtual void discretize(int resolution, std::vector<curvePoint>& data) = 0;
-    virtual bool hit_if_rec(const ray &r, double &t, double max_dt) = 0;
+    virtual bool hit_if_rec(const ray &r, double &t, double &t1, double max_dt) = 0;
 };
 
 
