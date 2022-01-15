@@ -134,7 +134,7 @@ void scene_gen(scene &sce, int idx) {
             break;
         
         case 17:
-            sce.objs = parse_obj("meshs/bunny.obj", "meshs/", false, false, make_shared<lambertian>(color(0.7, 0.3, 0.2)));
+            sce.objs = parse_obj("meshs/CornellBox-Original.obj", "meshs/", false, true, make_shared<lambertian>(color(0.7, 0.3, 0.2)));
             sce.background = color(0.7,0.8,0.9);
             sce.lookfrom = point3(0,0.2,5);
             sce.lookat = point3(0,1,0);

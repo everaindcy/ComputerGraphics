@@ -36,7 +36,7 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
         if(mat.diffuse_texname.empty()) {
             mats.push_back(make_shared<lambertian>(color(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2])));
         } else {
-            mats.push_back(make_shared<lambertian>(make_shared<image_texture>(mat.diffuse_texname.c_str())));
+            mats.push_back(make_shared<lambertian>(make_shared<image_texture>((mtl_path+mat.diffuse_texname).c_str())));
         }
     }
 
@@ -103,12 +103,12 @@ hittable_list parse_obj(const string file_obj, const string mtl_path,
             }
 
             auto mat_idx = shape.mesh.material_ids[i];
-            // auto mat_ptr = (mat_idx == -1) ? default_mat : mat_list[mat_id];
+            auto mat_ptr = (mat_idx == -1) ? default_mat : mats[mat_idx];
 
             tris.add(make_shared<triangle>(vv[0], vv[1], vv[2],
                                            vn[0], vn[1], vn[2],
                                            vt[0], vt[1], vt[2],
-                                           default_mat, use_vn_this, use_vt_this));
+                                           mat_ptr, use_vn_this, use_vt_this));
         }
 
         auto mh = make_shared<mesh>(tris);
