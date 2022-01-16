@@ -3,7 +3,7 @@
 
 #include "camera.h"
 #include "../util/utils.h"
-#include "../object/hittable_list.h"
+#include "../object/hittable/hittable_list.h"
 
 class scene {
 public:

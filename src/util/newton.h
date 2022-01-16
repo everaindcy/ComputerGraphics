@@ -1,8 +1,6 @@
 #ifndef NEWTON_H
 #define NEWTON_H
 
-#include <iostream>
-
 bool newton(double &ans, std::function<double(double)> f, std::function<double(double)> df, int depth = 10, double eps = 1e-8) {
     for (int i = 0; i < depth; i++) {
         double fx = f(ans);
@@ -10,9 +8,9 @@ bool newton(double &ans, std::function<double(double)> f, std::function<double(d
             return true;
         }
         double dfx = df(ans);
-        // if (dfx < eps && dfx > -eps) {
-        //     return false;
-        // }
+        if (fabs(dfx) < eps) {
+            return false;
+        }
         ans -= fx/dfx;
     }
     return false;

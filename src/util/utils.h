@@ -3,7 +3,6 @@
 
 #include "util.h"
 #include "algebra/algebra.h"
-#include "curve/curves.h"
 #include "ray.h"
 #include "color.h"
 #include "use_std_image.h"
