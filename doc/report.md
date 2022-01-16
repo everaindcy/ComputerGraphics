@@ -323,3 +323,30 @@ public:
 
 ## 结果
 
+![book2-final](../result/book2-final.png)
+
+本图包含: 贴图, 运动模糊, 折射, 反射, bvh加速
+
+![surface_rev](../result/surface_rev.png)
+
+本图为解析法求参数曲面
+
+![cornell](../result/cornell.png)
+
+康奈尔盒子, 可以看到 color blooding 现象
+
+![cornel_fog](../result/cornel_fog.png)
+
+烟雾
+
+![bottle](C:/Users/everain/src/ComputerGraphics/result/bottle.png)
+
+花瓶, 没有找到高分辨率的贴图, 所以看起来贴图非常糊
+
+![test](../result/test.png)
+
+带有景深, 镜面, 折射
+
+![mesh](C:/Users/everain/src/ComputerGraphics/result/mesh.png)
+
+复杂网格模型, 中间那块看起来奇怪的部分是两次反射成像的结果, 因为这个参数曲面是凹进去的, 因此上下表面都可以成像

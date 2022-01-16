@@ -345,8 +345,4 @@ hittable_list curves_no_mesh() {
     return objects;
 }
 
-hittable_list bunny_more() {
-
-}
-
 #endif

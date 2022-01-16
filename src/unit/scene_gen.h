@@ -13,6 +13,9 @@ void scene_gen(scene &sce, int idx) {
             sce.lookat = point3(0,0,0);
             sce.vfov = 20.0;
             sce.aperture = 0.1;
+            sce.samples_per_pixel = 2000;
+            sce.image_width = 1000;
+            sce.max_depth = 70;
             break;
 
         case 2:
