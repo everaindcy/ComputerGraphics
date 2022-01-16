@@ -25,7 +25,7 @@ static hittable_list motion_bunny_objs() {
         return mat4::translation(0.2*t,0,0);
     };
     auto motion_bunny = make_shared<motion>(mot,0,1,bunny);
-    // objects.add(motion_bunny);
+    objects.add(bunny);
     
     auto ground_texture = make_shared<checker_texture>(color(1,1,1), color(0.3,0.3,0.3));
     auto ground_surface = make_shared<lambertian>(ground_texture);
@@ -42,7 +42,7 @@ static hittable_list motion_bunny_objs() {
     auto curve_face = make_shared<surface_rev>(make_shared<bezierCurve2D>(a, b, n), metal_material, false, 50);
     objects.add(make_shared<transform>(mat4::translation(0, 2, -3), curve_face));
 
-    objects.add(make_shared<xz_rect>(-0.5, 0.5, -0.5, 0.5, 0.01001, make_shared<lambertian>(color(0.3, 0.2, 0.7))));
+    // objects.add(make_shared<xz_rect>(-0.5, 0.5, -0.5, 0.5, 0.01001, make_shared<lambertian>(color(0.3, 0.2, 0.7))));
 
     return objects;
 }

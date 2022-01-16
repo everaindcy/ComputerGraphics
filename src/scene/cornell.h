@@ -101,8 +101,8 @@ scene cornell_box_scene() {
 
     sce.background = color(0, 0, 0);
     
-    sce.samples_per_pixel = 2000;
-    sce.max_depth = 100;
+    sce.samples_per_pixel = 500;
+    sce.max_depth = 50;
 
     sce.resetcam();
 
