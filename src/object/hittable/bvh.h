@@ -37,8 +37,7 @@ public:
     bvh_node(std::vector<shared_ptr<hittable>>& objects,
              size_t start, size_t end, double time0, double time1);
 
-    virtual bool hit(
-        const ray& r, double t_min, double t_max, hit_record& rec) const override;
+    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
 
     virtual bool bounding_box(double time0, double time1, aabb& output_box) const override;
 

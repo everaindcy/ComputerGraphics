@@ -30,11 +30,8 @@ public:
           use_vn(use_vn), use_vt(use_vt) {}
     
     
-    virtual bool hit(
-        const ray& r, double t_min, double t_max, hit_record& rec) const override;
-
-    virtual bool bounding_box(
-        double time0, double time1, aabb& output_box) const override;
+    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
+    virtual bool bounding_box(double time0, double time1, aabb& output_box) const override;
 
 
     void set_vn(vec3 vn_a, vec3 vn_b, vec3 vn_c) {

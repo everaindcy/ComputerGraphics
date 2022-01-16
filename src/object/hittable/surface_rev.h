@@ -18,11 +18,8 @@ public:
     surface_rev(shared_ptr<curve> c, shared_ptr<hittable> _in_mesh, shared_ptr<hittable> _out_mesh, shared_ptr<material> m)
         : cv(c), mat_ptr(m), in_mesh(_in_mesh), out_mesh(_out_mesh), use_mesh(false) {}
 
-    virtual bool hit(
-        const ray& r, double t_min, double t_max, hit_record& rec) const override;
-
-    virtual bool bounding_box(
-        double time0, double time1, aabb& output_box) const override;
+    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
+    virtual bool bounding_box(double time0, double time1, aabb& output_box) const override;
 
 public:
     shared_ptr<curve> cv;

@@ -13,11 +13,8 @@ public:
         // std::cerr << trans[12] << '\t' << trans[13] << '\t' << trans[14] << '\t' << trans[15] << std::endl;
     }
 
-    virtual bool hit(
-        const ray& r, double t_min, double t_max, hit_record& rec) const override;
-
-    virtual bool bounding_box(
-        double time0, double time1, aabb& output_box) const override;
+    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
+    virtual bool bounding_box(double time0, double time1, aabb& output_box) const override;
 
 public:
     mat4 trans, trans_inv;

@@ -3,6 +3,7 @@
 #include "texture/textures.h"
 #include "material/materials.h"
 #include "unit/units.h"
+#include "scene/scenes.h"
 
 #include <sys/wait.h>
 #include <unistd.h>
@@ -34,8 +35,7 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 
 int main() {
     std::cerr << "Begin scene parse...\n" << std::flush;
-    scene sce;
-    scene_gen(sce, 20);
+    scene sce = curve_scene();
 
     std::cerr << "generate processes...\n" << std::flush;
 

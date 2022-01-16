@@ -19,11 +19,9 @@ public:
     mesh(hittable_list& tris) 
         : triangles(make_shared<bvh_node>(tris, 0,0)) {}
 
-    virtual bool hit(
-        const ray& r, double t_min, double t_max, hit_record& rec) const override;
+    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
 
-    virtual bool bounding_box(
-        double time0, double time1, aabb& output_box) const override;
+    virtual bool bounding_box(double time0, double time1, aabb& output_box) const override;
 
 public:
     shared_ptr<bvh_node> triangles;

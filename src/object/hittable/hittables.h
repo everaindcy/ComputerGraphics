@@ -8,6 +8,7 @@
 #include "medium.h"
 #include "mesh.h"
 #include "moving_sphere.h"
+#include "plane.h"
 #include "sphere.h"
 #include "surface_rev.h"
 #include "transform.h"
