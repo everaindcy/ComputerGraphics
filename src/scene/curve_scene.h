@@ -34,7 +34,7 @@ scene curve_scene() {
 
     sce.objs = curves_no_mesh();
 
-    sce.image_width = 400;
+    sce.image_width = 1080;
     sce.aspect_ratio = 16.0/9.0;
     sce.image_height = static_cast<int>(sce.image_width / sce.aspect_ratio);
 
@@ -49,10 +49,9 @@ scene curve_scene() {
 
     sce.background = color(0.70, 0.80, 1.00);
     
-    sce.samples_per_pixel = 100;
+    sce.samples_per_pixel = 200;
     sce.max_depth = 50;
 
-    sce.image_height = static_cast<int>(sce.image_width / sce.aspect_ratio);
     sce.resetcam();
 
     return sce;

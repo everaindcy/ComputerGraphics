@@ -35,7 +35,7 @@ color ray_color(const ray& r, const color& background, const hittable& world, in
 
 int main() {
     std::cerr << "Begin scene parse...\n" << std::flush;
-    scene sce = curve_scene();
+    scene sce = motion_bunny_scene();
 
     std::cerr << "generate processes...\n" << std::flush;
 

@@ -16,10 +16,14 @@ public:
 
     void clear() { objects.clear(); }
     void add(shared_ptr<hittable> object) { objects.push_back(object); }
+    void add(hittable_list &object) {
+        for (auto &obj : object.objects) {
+            add(obj);
+        }
+    }
     shared_ptr<hittable>& operator[] (int idx) {return objects[idx];}
 
     virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
-
     virtual bool bounding_box(double time0, double time1, aabb& output_box) const override;
 
 public:
