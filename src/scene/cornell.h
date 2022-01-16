@@ -52,13 +52,13 @@ static hittable_list cornell_box_objs2() {
 static hittable_list cornell_box_objs3() {
     hittable_list objects;
 
-    auto red   = make_shared<lambertian>(color(.65, .05, .05));
+    auto red   = make_shared<lambertian>(color(.65, .05, .25));
     auto white = make_shared<lambertian>(color(.73, .73, .73));
     auto green = make_shared<lambertian>(color(.12, .45, .15));
-    auto light = make_shared<diffuse_light>(color(15, 15, 15));
-    auto light1 = make_shared<diffuse_light>(color(0, 15, 15));
-    auto light2 = make_shared<diffuse_light>(color(15, 0, 15));
-    auto light3 = make_shared<diffuse_light>(color(15, 15, 0));
+    auto light = make_shared<diffuse_light>(color(10, 10, 10));
+    auto light1 = make_shared<diffuse_light>(color(0, 10, 10));
+    auto light2 = make_shared<diffuse_light>(color(10, 0, 10));
+    auto light3 = make_shared<diffuse_light>(color(10, 10, 0));
 
     objects.add(make_shared<yz_rect>(50, 200, 177, 382, 554, light));
     objects.add(make_shared<yz_rect>(200, 350, 27, 232, 554, light1));
@@ -69,14 +69,14 @@ static hittable_list cornell_box_objs3() {
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, white));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
-    objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
+    objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, red));
     
     shared_ptr<hittable> box0 = make_shared<box>(point3(-1, -1, -1), point3(556, 556, 556), white);
     // objects.add(make_shared<constant_medium>(box0, 0.001, color(1,1,1)));
     
     auto glass_mtl = make_shared<dielectric>(1.5);
-    auto bunny = parse_obj_ptr("meshs/dragon.obj", "meshs/", true, true, green, true);
-    objects.add(make_shared<transform>(mat4::translation(30,70,35)*mat4::scaling(500, 500, 500)*mat4::rotateY(90), bunny));
+    auto bunny = parse_obj_ptr("meshs/dragon.obj", "meshs/", true, true, glass_mtl, true);
+    objects.add(make_shared<transform>(mat4::translation(230,130,95)*mat4::scaling(400, 400, 400)*mat4::rotateY(90), bunny));
 
     return objects;
 }
@@ -86,7 +86,7 @@ scene cornell_box_scene() {
 
     sce.objs = cornell_box_objs3();
 
-    sce.image_width = 200;
+    sce.image_width = 1000;
     sce.aspect_ratio = 1.0;
     sce.image_height = static_cast<int>(sce.image_width / sce.aspect_ratio);
 
@@ -101,8 +101,8 @@ scene cornell_box_scene() {
 
     sce.background = color(0, 0, 0);
     
-    sce.samples_per_pixel = 100;
-    sce.max_depth = 50;
+    sce.samples_per_pixel = 2000;
+    sce.max_depth = 100;
 
     sce.resetcam();
 
