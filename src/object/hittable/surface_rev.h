@@ -215,7 +215,7 @@ bool surface_rev::hit(const ray& r, double t_min, double t_max, hit_record& rec)
     auto outward_normal = unit_vector(transformDirection(mat4::rotateY(180*phi/pi), cross(hit_dir_cv,vec3(0,0,1))));
     rec.set_face_normal(r, outward_normal);
     rec.u = phi/(2*pi);
-    rec.v = t_cv;
+    rec.v = (d <= 0) ? 1-t_cv : t_cv;
     rec.mat_ptr = mat_ptr;
 
     return true;
